@@ -105,10 +105,10 @@ class DataManager {
             }
             
             // 组合谓词
-            let combinedPredicate = predicates.reduce(#Predicate { true }, { $0 && $1 })
+            let combinedPredicate = predicates.reduce(#Predicate<Transaction> { _ in true }, { $0 && $1 })
             
-            let fetchDescriptor = FetchDescriptor<Transaction>(predicate: combinedPredicate)
-            fetchDescriptor.sortDescriptors = [SortDescriptor(\.rawDate, order: .reverse)]
+            var fetchDescriptor = FetchDescriptor<Transaction>(predicate: combinedPredicate)
+            fetchDescriptor.sortDescriptors = [SortDescriptor<Transaction>(\Transaction.rawDate, order: .reverse)]
             
             let transactions = try context.fetch(fetchDescriptor)
             print("获取交易记录成功，数量: \(transactions.count)")
@@ -148,10 +148,10 @@ class DataManager {
             id: UUID().uuidString,
             userId: userId,
             amount: amount,
-            type: type,
+            type: type.rawValue,
             categoryId: categoryId,
             date: dateString,
-            rawDate: date,
+            rawDate: dateString,
             time: timeString
         )
         
