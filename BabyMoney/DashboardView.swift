@@ -312,15 +312,8 @@ struct DashboardView: View {
     }
     
     private func loadTransactions() {
-        transactions = DataManager.shared.getTransactions(for: user.id)
-        // 更新用户余额
-        if let updatedUser = DataManager.shared.getUserById(user.id) {
-            // 如果用户余额发生变化，更新本地用户对象
-            if updatedUser.balance != user.balance {
-                // 这里我们可以通知父视图更新用户数据
-                NotificationCenter.default.post(name: Notification.Name("UserDataUpdated"), object: nil)
-            }
-        }
+        // 加载近期交易记录
+        transactions = DataManager.shared.getTransactions(for: user.id, limit: 5)
     }
 }
 
