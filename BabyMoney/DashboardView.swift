@@ -51,7 +51,6 @@ struct DashboardView: View {
                         .padding(.horizontal, 24)
                         .padding(.top, 16)
                         
-                        // 用户信息和余额
                         VStack(spacing: 8) {
                             HStack {
                                 ZStack {
@@ -77,7 +76,6 @@ struct DashboardView: View {
                             }
                             .padding(.top, 24)
                             
-                            // 余额卡片
                             ZStack {
                                 LinearGradient(gradient: Gradient(colors: [Color(hex: user.color), Color(hex: user.color).opacity(0.8)]), startPoint: .top, endPoint: .bottom)
                                     .cornerRadius(24)
@@ -100,144 +98,142 @@ struct DashboardView: View {
                     }
                     
                     // 功能按钮区域
-                    HStack(spacing: 20) {
-                        // 存款按钮
-                        Button(action: {
-                            // 存款功能
-                            showAddTransaction = true
-                        }) {
-                            VStack(spacing: 8) {
-                                ZStack {
-                                    Color.green.opacity(0.1)
-                                        .frame(width: 80, height: 80)
-                                        .clipShape(Circle())
+                    VStack(spacing: 20) {
+                        HStack(spacing: 20) {
+                            Button(action: {
+                                selectedTransactionType = .income
+                                showAddTransaction = true
+                            }) {
+                                VStack(spacing: 8) {
+                                    ZStack {
+                                        Color.green.opacity(0.1)
+                                            .frame(width: 80, height: 80)
+                                            .clipShape(Circle())
+                                        
+                                        Image(systemName: "arrow.down.circle.fill")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 40, height: 40)
+                                            .foregroundColor(.green)
+                                    }
                                     
-                                    Image(systemName: "arrow.down.circle.fill")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 40, height: 40)
-                                        .foregroundColor(.green)
+                                    Text("存入")
+                                        .font(.system(size: 16, weight: .medium))
                                 }
-                                
-                                Text("存入")
-                                    .font(.system(size: 16, weight: .medium))
+                            }
+                            
+                            Button(action: {
+                                selectedTransactionType = .expense
+                                showAddTransaction = true
+                            }) {
+                                VStack(spacing: 8) {
+                                    ZStack {
+                                        Color.red.opacity(0.1)
+                                            .frame(width: 80, height: 80)
+                                            .clipShape(Circle())
+                                        
+                                        Image(systemName: "arrow.up.circle.fill")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 40, height: 40)
+                                            .foregroundColor(.red)
+                                    }
+                                    
+                                    Text("取出")
+                                        .font(.system(size: 16, weight: .medium))
+                                }
+                            }
+                            
+                            Button(action: {
+                                showTransactionHistory = true
+                            }) {
+                                VStack(spacing: 8) {
+                                    ZStack {
+                                        Color.purple.opacity(0.1)
+                                            .frame(width: 80, height: 80)
+                                            .clipShape(Circle())
+                                        
+                                        Image(systemName: "clock.arrow.circlepath")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 40, height: 40)
+                                            .foregroundColor(.purple)
+                                    }
+                                    
+                                    Text("历史")
+                                        .font(.system(size: 16, weight: .medium))
+                                }
                             }
                         }
                         
-                        // 取款按钮
-                        Button(action: {
-                            // 取款功能
-                            showAddTransaction = true
-                        }) {
-                            VStack(spacing: 8) {
-                                ZStack {
-                                    Color.red.opacity(0.1)
-                                        .frame(width: 80, height: 80)
-                                        .clipShape(Circle())
+                        HStack(spacing: 20) {
+                            Button(action: {
+                                showSettings = true
+                            }) {
+                                VStack(spacing: 8) {
+                                    ZStack {
+                                        Color.blue.opacity(0.1)
+                                            .frame(width: 80, height: 80)
+                                            .clipShape(Circle())
+                                        
+                                        Image(systemName: "gear")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 40, height: 40)
+                                            .foregroundColor(.blue)
+                                    }
                                     
-                                    Image(systemName: "arrow.up.circle.fill")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 40, height: 40)
-                                        .foregroundColor(.red)
+                                    Text("设置")
+                                        .font(.system(size: 16, weight: .medium))
                                 }
-                                
-                                Text("取出")
-                                    .font(.system(size: 16, weight: .medium))
+                            }
+                            
+                            Button(action: {
+                                showReports = true
+                            }) {
+                                VStack(spacing: 8) {
+                                    ZStack {
+                                        Color.green.opacity(0.1)
+                                            .frame(width: 80, height: 80)
+                                            .clipShape(Circle())
+                                        
+                                        Image(systemName: "chart.bar")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 40, height: 40)
+                                            .foregroundColor(.green)
+                                    }
+                                    
+                                    Text("报告")
+                                        .font(.system(size: 16, weight: .medium))
+                                }
+                            }
+                            
+                            Button(action: {
+                                showAIAdvice = true
+                            }) {
+                                VStack(spacing: 8) {
+                                    ZStack {
+                                        Color.purple.opacity(0.1)
+                                            .frame(width: 80, height: 80)
+                                            .clipShape(Circle())
+                                        
+                                        Image(systemName: "brain.fill")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 40, height: 40)
+                                            .foregroundColor(.purple)
+                                    }
+                                    
+                                    Text("智慧兔兔")
+                                        .font(.system(size: 16, weight: .medium))
+                                }
                             }
                         }
-                        
-                        // 历史按钮
-                        Button(action: {
-                            // 历史功能
-                            showTransactionHistory = true
-                        }) {
-                            VStack(spacing: 8) {
-                                ZStack {
-                                    Color.purple.opacity(0.1)
-                                        .frame(width: 80, height: 80)
-                                        .clipShape(Circle())
-                                    
-                                    Image(systemName: "clock.arrow.circlepath")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 40, height: 40)
-                                        .foregroundColor(.purple)
-                                }
-                                
-                                Text("历史")
-                                    .font(.system(size: 16, weight: .medium))
-                            }
-                        }
-                        
-                        // 设置按钮
-                Button(action: {
-                    showSettings = true
-                }) {
-                    VStack(spacing: 8) {
-                        ZStack {
-                            Color.blue.opacity(0.1)
-                                .frame(width: 80, height: 80)
-                                .clipShape(Circle())
-                            
-                            Image(systemName: "gear")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 40, height: 40)
-                                .foregroundColor(.blue)
-                        }
-                        
-                        Text("设置")
-                            .font(.system(size: 16, weight: .medium))
                     }
-                }
-                
-                // 报告按钮
-                Button(action: {
-                    showReports = true
-                }) {
-                    VStack(spacing: 8) {
-                        ZStack {
-                            Color.green.opacity(0.1)
-                                .frame(width: 80, height: 80)
-                                .clipShape(Circle())
-                            
-                            Image(systemName: "chart.bar")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 40, height: 40)
-                                .foregroundColor(.green)
-                        }
-                        
-                        Text("报告")
-                            .font(.system(size: 16, weight: .medium))
-                    }
-                }
-                
-                // 智慧兔兔按钮
-                Button(action: {
-                    showAIAdvice = true
-                }) {
-                    VStack(spacing: 8) {
-                        ZStack {
-                            Color.purple.opacity(0.1)
-                                .frame(width: 80, height: 80)
-                                .clipShape(Circle())
-                            
-                            Image(systemName: "brain.fill")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 40, height: 40)
-                                .foregroundColor(.purple)
-                        }
-                        
-                        Text("智慧兔兔")
-                            .font(.system(size: 16, weight: .medium))
-                    }
-                }
                     .padding(.horizontal, 24)
                     
-                    // 近期交易记录
+                    // 近期交易
                     VStack(alignment: .leading, spacing: 16) {
                         HStack {
                             Text("近期交易")
@@ -246,7 +242,7 @@ struct DashboardView: View {
                             Spacer()
                             
                             Button(action: {
-                                // 查看全部交易
+                                showTransactionHistory = true
                             }) {
                                 Text("查看全部")
                                     .font(.system(size: 16))
@@ -254,7 +250,6 @@ struct DashboardView: View {
                             }
                         }
                         
-                        // 交易列表
                         if transactions.isEmpty {
                             VStack(spacing: 12) {
                                 Image(systemName: "receipt.long")
@@ -294,73 +289,31 @@ struct DashboardView: View {
             AddTransactionView(user: user)
         }
         .sheet(isPresented: $showTransactionHistory) {
-                    TransactionHistoryView(user: user)
-                        .environment(\.modelContext, modelContext)
-                }
-                .sheet(isPresented: $showSettings) {
-                    SettingsView()
-                        .environment(\.modelContext, modelContext)
-                }
-                .sheet(isPresented: $showAIAdvice) {
-                    AIAdviceView(user: user)
-                        .environment(\.modelContext, modelContext)
-                }
-                .sheet(isPresented: $showReports) {
-                    ReportsView(user: user)
-                        .environment(\.modelContext, modelContext)
-                }
+            TransactionHistoryView(user: user)
+                .environment(\.modelContext, modelContext)
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
+                .environment(\.modelContext, modelContext)
+        }
+        .sheet(isPresented: $showAIAdvice) {
+            AIAdviceView(user: user)
+                .environment(\.modelContext, modelContext)
+        }
+        .sheet(isPresented: $showReports) {
+            ReportsView(user: user)
+                .environment(\.modelContext, modelContext)
+        }
     }
     
     private func loadTransactions() {
-        // 加载近期交易记录
+        // 加载用户的最近交易记录
         transactions = DataManager.shared.getTransactions(for: user.id, limit: 5)
     }
 }
 
-// 交易行组件
-struct TransactionRow: View {
-    let transaction: Transaction
-    
-    var body: some View {
-        HStack {
-            // 分类图标
-            if let category = Category.getCategoryById(transaction.categoryId) {
-                ZStack {
-                    Color(hex: category.backgroundColor)
-                        .frame(width: 60, height: 60)
-                        .cornerRadius(16)
-                    
-                    Image(systemName: category.iconName)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 30, height: 30)
-                        .foregroundColor(Color(hex: category.color))
-                }
-            }
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(Category.getCategoryById(transaction.categoryId)?.name ?? "未分类")
-                    .font(.system(size: 18, weight: .medium))
-                
-                Text("\(transaction.date) \(transaction.time)")
-                    .font(.system(size: 14))
-                    .foregroundColor(.gray)
-            }
-            .padding(.leading, 16)
-            
-            Spacer()
-            
-            Text(transaction.type == .income ? "+¥\(transaction.amount, specifier: "%.2f")" : "-¥\(transaction.amount, specifier: "%.2f")")
-                .font(.system(size: 20, weight: .bold))
-                .foregroundColor(transaction.type == .income ? .green : .red)
-        }
-        .padding(16)
-        .background(Color.gray.opacity(0.05))
-        .cornerRadius(16)
-    }
-}
+// TransactionRow 结构体在 TransactionHistoryView.swift 中已定义，此处不再重复
 
-// 添加交易视图
 struct AddTransactionView: View {
     let user: User
     @State private var amount: String = ""
@@ -373,7 +326,6 @@ struct AddTransactionView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 24) {
-                // 类型选择器
                 Picker("交易类型", selection: $type) {
                     Text("存入").tag(TransactionType.income)
                     Text("取出").tag(TransactionType.expense)
@@ -382,7 +334,6 @@ struct AddTransactionView: View {
                 .padding(.horizontal, 24)
                 .padding(.top, 24)
                 
-                // 金额输入
                 VStack(alignment: .leading, spacing: 8) {
                     Text("金额")
                         .font(.system(size: 18, weight: .medium))
@@ -400,7 +351,6 @@ struct AddTransactionView: View {
                 }
                 .padding(.horizontal, 24)
                 
-                // 分类选择 (仅在取出时显示)
                 if type == .expense {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("分类")
@@ -438,13 +388,12 @@ struct AddTransactionView: View {
                     }
                     .padding(.horizontal, 24)
                 } else {
-                    // 存款时使用默认分类
+                    // 存款不需要选择分类，但需要保持UI平衡
                     selectedCategoryId = Category.allCategories.first?.id ?? ""
                 }
                 
                 Spacer()
                 
-                // 确认按钮
                 Button(action: {
                     if let amountValue = Double(amount), amountValue > 0 {
                         let success = DataManager.shared.handleTransaction(
@@ -455,13 +404,12 @@ struct AddTransactionView: View {
                         )
                         
                         if success {
-                            // 发送通知，通知DashboardView刷新数据
+                            // 通知更新数据
                             NotificationCenter.default.post(name: Notification.Name("TransactionsUpdated"), object: nil)
-                            // 也通知用户数据已更新
                             NotificationCenter.default.post(name: Notification.Name("UserDataUpdated"), object: nil)
                             dismiss()
                         } else {
-                            // 显示错误消息
+                            // 显示错误提示
                             alertMessage = type == .expense ? "余额不足，请检查余额后再试" : "交易失败，请重试"
                             showAlert = true
                         }
@@ -500,29 +448,4 @@ struct AddTransactionView: View {
     return DashboardView(user: user)
 }
 
-// 导入UIKit用于导航控制器
-extension Color {
-    init(hex: String) {
-        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int: UInt64 = 0
-        Scanner(string: hex).scanHexInt64(&int)
-        let a, r, g, b: UInt64
-        switch hex.count {
-        case 3: // RGB (12-bit)
-            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6: // RGB (24-bit)
-            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        case 8: // ARGB (32-bit)
-            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
-        default:
-            (a, r, g, b) = (255, 0, 0, 0)
-        }
-        self.init(
-            .sRGB,
-            red: Double(r) / 255,
-            green: Double(g) / 255,
-            blue: Double(b) / 255,
-            opacity: Double(a) / 255
-        )
-    }
-}
+// Color扩展在 ContentView.swift 中已定义，此处不再重复

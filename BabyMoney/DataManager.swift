@@ -59,19 +59,34 @@ class DataManager {
         do {
             let schema = Schema([User.self, Transaction.self])
             let modelConfiguration = ModelConfiguration(schema: schema)
-            container = try ModelContainer(for: schema, configurations: [modelConfiguration])
-            context = container?.mainContext
+            container = try ModelContainer(for: User.self, Transaction.self, configurations: modelConfiguration)
             
-            // 检查是否需要初始化数据
-            if let context = context {
-                let fetchDescriptor = FetchDescriptor<User>()
-                let users = try context.fetch(fetchDescriptor)
-                if users.isEmpty {
-                    // 添加初始用户
-                    for user in initialUsers {
-                        context.insert(user)
+            // 确保在主线程上访问mainContext并进行后续操作
+            DispatchQueue.main.async {
+                // 安全地访问container和mainContext
+                guard let container = self.container else {
+                    print("容器初始化失败，无法设置上下文")
+                    return
+                }
+                
+                self.context = container.mainContext
+                
+                // 检查是否需要初始化数据
+                if let context = self.context {
+                    do {
+                        let fetchDescriptor = FetchDescriptor<User>()
+                        let users = try context.fetch(fetchDescriptor)
+                        if users.isEmpty {
+                            // 添加初始用户
+                            for user in self.initialUsers {
+                                context.insert(user)
+                            }
+                            try context.save()
+                            print("初始用户数据已成功添加")
+                        }
+                    } catch {
+                        print("初始化数据失败: \(error.localizedDescription)")
                     }
-                    try context.save()
                 }
             }
         } catch {
@@ -101,14 +116,17 @@ class DataManager {
             
             // 如果指定了类型，则添加类型筛选
             if let transactionType = type {
-                predicates.append(#Predicate { $0.type == transactionType })
+                predicates.append(#Predicate { $0.type == transactionType.rawValue })
             }
             
-            // 组合谓词
-            let combinedPredicate = predicates.reduce(#Predicate<Transaction> { _ in true }, { $0 && $1 })
+            // 使用简单的谓词处理，避免复杂组合
+            var fetchDescriptor = FetchDescriptor<Transaction>()
             
-            var fetchDescriptor = FetchDescriptor<Transaction>(predicate: combinedPredicate)
-            fetchDescriptor.sortDescriptors = [SortDescriptor<Transaction>(\Transaction.rawDate, order: .reverse)]
+            if let firstPredicate = predicates.first {
+                fetchDescriptor.predicate = firstPredicate
+            }
+            
+            fetchDescriptor.sortBy = [SortDescriptor(\Transaction.rawDate, order: .reverse)]
             
             let transactions = try context.fetch(fetchDescriptor)
             print("获取交易记录成功，数量: \(transactions.count)")

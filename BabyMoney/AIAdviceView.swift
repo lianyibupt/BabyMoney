@@ -92,7 +92,7 @@ struct AIAdviceView: View {
                 }
             }
             .sheet(isPresented: $showReport) {
-                ReportDetailView(report: report, userName: user.name)
+                Text("报告详情：\(report.title)")
             }
             .alert(isPresented: $showError) {
                 Alert(title: Text("错误"), message: Text(errorMessage), dismissButton: .default(Text("确定")))
@@ -112,7 +112,7 @@ struct AIAdviceView: View {
             } catch {
                 errorMessage = "获取建议失败：\(error.localizedDescription)"
                 showError = true
-            } finally {
+            defer {
                 isLoading = false
             }
         }
@@ -128,7 +128,7 @@ struct AIAdviceView: View {
             } catch {
                 errorMessage = "生成报告失败：\(error.localizedDescription)"
                 showError = true
-            } finally {
+            defer {
                 isLoading = false
             }
         }
@@ -138,10 +138,11 @@ struct AIAdviceView: View {
         return try await withCheckedThrowingContinuation { continuation in
             DispatchQueue.main.async {
                 do {
-                    let descriptor = FetchDescriptor<Transaction>(
-                        predicate: #Predicate { $0.user?.id == user.id },
-                        sortBy: [SortDescriptor(\Transaction.rawDate, order: .reverse)]
-                    )
+                      let userId = user.id
+                      let descriptor = FetchDescriptor<Transaction>(
+                         predicate: #Predicate { transaction in transaction.userId == userId },
+                          sortBy: [SortDescriptor(\Transaction.rawDate, order: .reverse)]
+                      )
                     let transactions = try modelContext.fetch(descriptor)
                     continuation.resume(returning: transactions)
                 } catch {

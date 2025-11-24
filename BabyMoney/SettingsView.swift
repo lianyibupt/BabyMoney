@@ -127,11 +127,10 @@ struct SettingsView: View {
         NavigationView {
             Form {
                 TextField("用户名", text: $newUserName)
-                    .textFieldStyle(.roundedBorder)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
                 
-                TextField("初始余额", text: $newUserBalance)
-                    .textFieldStyle(.roundedBorder)
-                    .keyboardType(.decimalPad)
+                TextField("请输入金额", text: $newUserBalance)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
             }
             .navigationTitle("添加用户")
             .toolbar {
@@ -217,7 +216,16 @@ struct SettingsView: View {
             return
         }
         
-        let newUser = User(name: newUserName, balance: balance)
+        // 创建一个默认颜色配置的新用户
+        let newUser = User(
+            id: UUID().uuidString,
+            name: newUserName,
+            color: "FF9500",
+            textColor: "FFFFFF",
+            borderColor: "FFCC00",
+            iconColor: "FFFFFF",
+            balance: balance
+        )
         modelContext.insert(newUser)
         
         do {
