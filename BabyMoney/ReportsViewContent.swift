@@ -4,6 +4,9 @@ import SwiftUI
 struct ReportsViewContent: View {
     let userName: String
     @State private var selectedTimeRange: TimeRangeType = .month
+    @State private var totalIncome: Double = 0
+    @State private var totalExpense: Double = 0
+    @State private var transactions: [Transaction] = []
     
     enum TimeRangeType: String, CaseIterable {
         case week = "本周"
@@ -37,8 +40,8 @@ struct ReportsViewContent: View {
                 
                 // 收支统计卡片
                 HStack {
-                    StatCardView(title: "总收入", amount: "+¥100.00", color: Color(hex: "4CAF50"))
-                    StatCardView(title: "总支出", amount: "-¥95.00", color: Color(hex: "FF6B6B"))
+                    StatCardView(title: "总收入", amount: "+￥\(String(format: "%.2f", totalIncome))", color: Color(hex: "4CAF50"))
+                    StatCardView(title: "总支出", amount: "-￥\(String(format: "%.2f", totalExpense))", color: Color(hex: "FF6B6B"))
                 }
                 .padding(.horizontal, 20)
                 
@@ -63,6 +66,27 @@ struct ReportsViewContent: View {
                 .padding(.bottom, 100)
             }
         }
+        .onAppear {
+            loadData()
+        }
+    }
+    
+    private func loadData() {
+        let users = DataManager.shared.getAllUsers()
+        guard let user = users.first(where: { $0.name == userName }) else {
+            return
+        }
+        
+        transactions = DataManager.shared.getTransactionsForUser(user.id)
+        
+        // 计算总收入和总支出
+        totalIncome = transactions
+            .filter { $0.type == "in" }
+            .reduce(0) { $0 + $1.amount }
+        
+        totalExpense = transactions
+            .filter { $0.type == "out" }
+            .reduce(0) { $0 + $1.amount }
     }
 }
 

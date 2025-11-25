@@ -9,14 +9,10 @@ struct DashboardView: View {
     @State private var activeTab = 0
     @State private var showSettings = false
     @State private var refreshTrigger = false
-    
-    // 模拟交易数据
-    let recentTransactions = [
-        TransactionItem(name: "买零食", type: .expense, amount: "-¥12.50", date: "今天 14:30", icon: "🍬"),
-        TransactionItem(name: "零花钱", type: .income, amount: "+¥50.00", date: "今天 12:00", icon: "💰"),
-        TransactionItem(name: "卖旧书", type: .income, amount: "+¥8.00", date: "昨天 16:45", icon: "📚"),
-        TransactionItem(name: "买文具", type: .expense, amount: "-¥15.00", date: "昨天 10:20", icon: "✏️")
-    ]
+    @State private var showTransactionList = false
+    @State private var showTransactionDetail = false
+    @State private var selectedTransaction: Transaction?
+    @State private var recentTransactions: [Transaction] = []
     
     var body: some View {
         ZStack {
@@ -31,70 +27,65 @@ struct DashboardView: View {
                 case 0:
                     // 主页内容
                     VStack {
-                        // 顶部用户信息和设置按钮
+                        // 顶部用户信息
                         HStack {
                             VStack(alignment: .leading) {
                                 Text("欢迎，\(userName)")
                                     .font(.system(size: 16))
                                     .foregroundColor(Color.gray)
-                                Text("今天也要加油哦！")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(Color.gray)
                             }
                             
                             Spacer()
-                            
-                            Button(action: {
-                                showSettings = true
-                            }) {
-                                Image(systemName: "gearshape")
-                                    .resizable()
-                                    .frame(width: 24, height: 24)
-                                    .foregroundColor(Color(hex: "FF8585"))
-                            }
                         }
                         .padding(.top, 60)
                         .padding(.horizontal, 20)
                         .padding(.bottom, 20)
                         
-                        // 账户卡片
+                        HStack {
+                            Text("余额")
+                                .font(.system(size: 18))
+                                .foregroundColor(Color.gray)
+                            
+                            Spacer()
+                        }
+                        .padding(.horizontal, 20)
+                        
+                        // 余额显示 - 放大字体
+                        Text("￥\(String(format: "%.2f", balance))")
+                            .font(.system(size: 64, weight: .bold))
+                            .foregroundColor(Color.black)
+                            .padding(.horizontal, 20)
+                        
+                        Spacer().frame(height: 20)
+                        
+                        // 账户卡片 (Modified to show income/expense with larger fonts)
                         ZStack {
                             RoundedRectangle(cornerRadius: 20)
                                 .fill(Color(hex: userName == "蓝莓" ? "9B6BFF" : "FF6B6B"))
                                 .padding(.horizontal, 20)
                                 .shadow(radius: 5)
                             
-                            VStack(spacing: 10) {
-                                Text("账户余额")
-                                    .font(.system(size: 16))
-                                    .foregroundColor(Color.white.opacity(0.9))
+                            HStack(spacing: 20) {
+                                // 收入
+                                VStack {
+                                    Text("本月收入")
+                                        .font(.system(size: 14))
+                                        .foregroundColor(Color.white.opacity(0.8))
+                                    Text(String(format: "+¥%.2f", thisMonthIncome))
+                                        .font(.system(size: 32, weight: .bold))
+                                        .foregroundColor(Color.white)
+                                }
                                 
-                                Text(String(format: "¥%.2f", balance))
-                                    .font(.system(size: 36, weight: .bold))
-                                    .foregroundColor(Color.white)
+                                Spacer()
                                 
-                                HStack(spacing: 20) {
-                                    // 收入
-                                    VStack {
-                                        Text("本月收入")
-                                            .font(.system(size: 14))
-                                            .foregroundColor(Color.white.opacity(0.8))
-                                        Text(String(format: "+¥%.2f", thisMonthIncome))
-                                            .font(.system(size: 18, weight: .medium))
-                                            .foregroundColor(Color.white)
-                                    }
-                                    
-                                    Spacer()
-                                    
-                                    // 支出
-                                    VStack {
-                                        Text("本月支出")
-                                            .font(.system(size: 14))
-                                            .foregroundColor(Color.white.opacity(0.8))
-                                        Text(String(format: "-¥%.2f", thisMonthExpense))
-                                            .font(.system(size: 18, weight: .medium))
-                                            .foregroundColor(Color.white)
-                                    }
+                                // 支出
+                                VStack {
+                                    Text("本月支出")
+                                        .font(.system(size: 14))
+                                        .foregroundColor(Color.white.opacity(0.8))
+                                    Text(String(format: "-¥%.2f", thisMonthExpense))
+                                        .font(.system(size: 32, weight: .bold))
+                                        .foregroundColor(Color.white)
                                 }
                             }
                             .padding(22)
@@ -112,7 +103,7 @@ struct DashboardView: View {
                             Spacer()
                             
                             Button(action: {
-                                // 查看全部按钮点击事件
+                                showTransactionList = true
                             }) {
                                 Text("查看全部")
                                     .font(.system(size: 14))
@@ -124,8 +115,12 @@ struct DashboardView: View {
                         // 交易列表
                         ScrollView {
                             VStack(spacing: 15) {
-                                ForEach(recentTransactions) { transaction in
-                                    TransactionRow(transaction: transaction)
+                                ForEach(recentTransactions.prefix(5), id: \.id) { transaction in
+                                    TransactionRowView(transaction: transaction)
+                                        .onTapGesture {
+                                            selectedTransaction = transaction
+                                            showTransactionDetail = true
+                                        }
                                 }
                             }
                             .padding(.horizontal, 20)
@@ -157,24 +152,8 @@ struct DashboardView: View {
                     // 建议页面
                     AIAdviceViewContent()
                 case 3:
-                    // 我的页面
-                    VStack(spacing: 20) {
-                        Text("我的页面")
-                            .font(.system(size: 24, weight: .bold))
-                            .foregroundColor(Color.black)
-                            .padding(.top, 60)
-
-                        Picker("账户", selection: $userName) {
-                            Text("蓝莓").tag("蓝莓")
-                            Text("樱桃").tag("樱桃")
-                        }
-                        .pickerStyle(.segmented)
-                        .padding(.horizontal, 20)
-
-                        Text("当前账户：\(userName)")
-                            .font(.system(size: 16))
-                            .foregroundColor(Color.gray)
-                    }
+                    // 我的页面 - 显示设置
+                    SettingsView()
                 default:
                     Text("未知页面")
                 }
@@ -201,19 +180,18 @@ struct DashboardView: View {
                 refreshData()
             }
         }
-        .sheet(isPresented: $showSettings) {
-            SettingsView()
+        .sheet(isPresented: $showTransactionList) {
+            TransactionListView()
+        }
+        .sheet(isPresented: $showTransactionDetail) {
+            if let transaction = selectedTransaction {
+                TransactionDetailView(transaction: transaction) {
+                    deleteTransaction(transaction)
+                }
+            }
         }
         .onAppear {
-            // 从DataManager获取用户数据
-            let users = DataManager.shared.getAllUsers()
-            if let currentUser = users.first(where: { $0.name == userName }) {
-                balance = currentUser.balance
-            }
-            
-            // 模拟本月收入和支出（这里可以替换为实际的DataManager调用）
-            thisMonthIncome = 50.0
-            thisMonthExpense = 27.50
+            refreshData()
         }
         .onChange(of: userName) { _, newValue in
             refreshData()
@@ -227,11 +205,13 @@ struct DashboardView: View {
         let users = DataManager.shared.getAllUsers()
         if let currentUser = users.first(where: { $0.name == userName }) {
             balance = currentUser.balance
+            
+            // 加载交易数据
+            recentTransactions = DataManager.shared.getTransactionsForUser(currentUser.id)
         }
         
-        // 模拟本月收入和支出（这里可以替换为实际的DataManager调用）
-        let transactions = DataManager.shared.getTransactionsForUser(users.first(where: { $0.name == userName })?.id ?? "")
-        let currentMonth = Calendar.current.component(.month, from: Date())
+        // 计算本月收入和支出
+        let transactions = recentTransactions
         
         thisMonthIncome = transactions
             .filter { $0.type == "in" }
@@ -240,6 +220,13 @@ struct DashboardView: View {
         thisMonthExpense = transactions
             .filter { $0.type == "out" }
             .reduce(0) { $0 + $1.amount }
+    }
+    
+    private func deleteTransaction(_ transaction: Transaction) {
+        // 从本地列表中移除
+        recentTransactions.removeAll { $0.id == transaction.id }
+        // 刷新数据
+        refreshData()
     }
 }
 
@@ -338,115 +325,137 @@ struct AddTransactionView: View {
             Color(hex: "FFF5F5")
                 .ignoresSafeArea()
             
-            ScrollView {
-                VStack(spacing: 30) {
-                    // 标题
-                    Text("记一笔")
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(Color.black)
-                        .padding(.top, 60)
-                    
-                    // 金额输入
-                    VStack(spacing: 10) {
-                        Text("金额")
-                            .font(.system(size: 16))
-                            .foregroundColor(Color.gray)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        
-                        TextField("输入金额", text: $amount)
-                            .keyboardType(.decimalPad)
-                            .font(.system(size: 32, weight: .bold))
+            VStack(spacing: 0) {
+                // 顶部标题
+                HStack {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 20))
                             .foregroundColor(Color(hex: "FF8585"))
+                            .padding()
+                    }
+                    
+                    Spacer()
+                    
+                    Text("记一笔")
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundColor(Color.black)
+                    
+                    Spacer()
+                    
+                    Color.clear
+                        .frame(width: 44, height: 44)
+                }
+                .padding(.top, 20)
+                
+                // 可滚动内容
+                ScrollView {
+                    VStack(spacing: 20) {
+                        // 金额输入
+                        VStack(spacing: 10) {
+                            Text("金额")
+                                .font(.system(size: 16))
+                                .foregroundColor(Color.gray)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            // 金额输入 - 放大字体
+                        TextField("输入金额", text: $amount)
+                            .font(.system(size: 64, weight: .bold))
+                            .keyboardType(.decimalPad)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(Color.black)
                             .padding()
                             .background(Color.white)
                             .cornerRadius(15)
                             .shadow(radius: 3)
-                    }
-                    .padding(.horizontal, 30)
-                    
-                    // 类型选择
-                    VStack(spacing: 10) {
-                        Text("类型")
-                            .font(.system(size: 16))
-                            .foregroundColor(Color.gray)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        
-                        HStack(spacing: 20) {
-                            TypeButton(
-                                title: "收入",
-                                color: Color(hex: "4CAF50"),
-                                isSelected: selectedType == "in"
-                            ) {
-                                selectedType = "in"
-                                selectedCategory = nil // 收入不需要分类
-                            }
-                            TypeButton(
-                                title: "支出",
-                                color: Color(hex: "FF6B6B"),
-                                isSelected: selectedType == "out"
-                            ) {
-                                selectedType = "out"
-                            }
                         }
-                    }
-                    .padding(.horizontal, 30)
-                    
-                    // 分类选择（仅支出时显示）
-                    if selectedType == "out" {
+                        .padding(.horizontal, 30)
+                        
+                        // 类型选择
                         VStack(spacing: 10) {
-                            Text("分类")
+                            Text("类型")
                                 .font(.system(size: 16))
                                 .foregroundColor(Color.gray)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 15) {
-                                    ForEach(Category.allCategories, id: \.id) { category in
-                                        CategoryButton(
-                                            category: category,
-                                            isSelected: selectedCategory == category.id
-                                        ) {
-                                            selectedCategory = category.id
-                                        }
-                                    }
+                            HStack(spacing: 20) {
+                                TypeButton(
+                                    title: "收入",
+                                    color: Color(hex: "4CAF50"),
+                                    isSelected: selectedType == "in"
+                                ) {
+                                    selectedType = "in"
+                                    selectedCategory = nil // 收入不需要分类
+                                }
+                                TypeButton(
+                                    title: "支出",
+                                    color: Color(hex: "FF6B6B"),
+                                    isSelected: selectedType == "out"
+                                ) {
+                                    selectedType = "out"
                                 }
                             }
                         }
                         .padding(.horizontal, 30)
-                    }
-                    
-                    // 描述输入
-                    VStack(spacing: 10) {
-                        Text("描述")
-                            .font(.system(size: 16))
-                            .foregroundColor(Color.gray)
-                            .frame(maxWidth: .infinity, alignment: .leading)
                         
-                        TextField("添加描述（可选）", text: $description)
-                            .font(.system(size: 16))
-                            .padding()
-                            .background(Color.white)
-                            .cornerRadius(15)
-                            .shadow(radius: 3)
+                        // 分类选择（仅支出时显示）
+                        if selectedType == "out" {
+                            VStack(spacing: 10) {
+                                Text("分类")
+                                    .font(.system(size: 16))
+                                    .foregroundColor(Color.gray)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    HStack(spacing: 15) {
+                                        ForEach(Category.allCategories, id: \.id) { category in
+                                            CategoryButton(
+                                                category: category,
+                                                isSelected: selectedCategory == category.id
+                                            ) {
+                                                selectedCategory = category.id
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            .padding(.horizontal, 30)
+                        }
+                        
+                        // 描述输入
+                        VStack(spacing: 10) {
+                            Text("描述")
+                                .font(.system(size: 16))
+                                .foregroundColor(Color.gray)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            
+                            TextField("添加描述（可选）", text: $description)
+                                .font(.system(size: 16))
+                                .padding()
+                                .background(Color.white)
+                                .cornerRadius(15)
+                                .shadow(radius: 3)
+                        }
+                        .padding(.horizontal, 30)
+                        .padding(.bottom, 20)
                     }
-                    .padding(.horizontal, 30)
-                    
-                    Spacer().frame(height: 20)
-                    
-                    // 确认按钮
-                    Button(action: saveTransaction) {
-                        Text("确认")
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(Color.white)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color(hex: "FF8585"))
-                            .cornerRadius(25)
-                            .shadow(radius: 5)
-                    }
-                    .padding(.horizontal, 30)
-                    .padding(.bottom, 80)
                 }
+                
+                // 确认按钮 - 固定在底部
+                Button(action: saveTransaction) {
+                    Text("确认")
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundColor(Color.white)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color(hex: "FF8585"))
+                        .cornerRadius(25)
+                        .shadow(radius: 5)
+                }
+                .padding(.horizontal, 30)
+                .padding(.bottom, 40)
+                .padding(.top, 10)
             }
         }
     }
