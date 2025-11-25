@@ -1,0 +1,22 @@
+BabyMoneyApp.swift:10:1: error: 'main' attribute cannot be used in a module that contains top-level code
+ 1 | //
+   | |- note: top-level code defined in this source file
+   | `- note: pass '-parse-as-library' to compiler invocation if this is intentional
+ 2 | //  BabyMoneyApp.swift
+ 3 | //  BabyMoney
+   :
+ 8 | import SwiftUI
+ 9 | 
+10 | @main
+   | `- error: 'main' attribute cannot be used in a module that contains top-level code
+11 | struct BabyMoneyApp: App {
+12 |     var body: some Scene {
+
+
+BabyMoneyApp.swift:14:13: error: cannot find 'ContentView' in scope
+12 |     var body: some Scene {
+13 |         WindowGroup {
+14 |             ContentView()
+   |             `- error: cannot find 'ContentView' in scope
+15 |         }
+16 |     }

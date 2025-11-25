@@ -6,10 +6,9 @@
 //
 
 import Foundation
-import SwiftData
 
-@Model
-final class Item {
+// 项目结构体，不使用SwiftData
+struct Item {
     var timestamp: Date
     
     init(timestamp: Date) {

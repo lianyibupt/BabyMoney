@@ -1,5 +1,4 @@
 import Foundation
-import SwiftData
 
 class AIService {
     static let shared = AIService()
@@ -10,7 +9,7 @@ class AIService {
     // 获取理财建议
     func getFinancialAdvice(for user: User, transactions: [Transaction]) async -> String {
         // 模拟API调用延迟
-        await Task.sleep(1_000_000_000) // 1秒
+        try? await Task.sleep(nanoseconds: 1_000_000_000) // 1秒
         
         return """
 嗨，\(user.name)！我是你的智慧兔兔理财助手🐰
@@ -29,7 +28,7 @@ class AIService {
     // 获取消费分析报告
     func getConsumptionReport(for user: User, transactions: [Transaction]) async -> String {
         // 模拟API调用延迟
-        await Task.sleep(1_500_000_000) // 1.5秒
+        try? await Task.sleep(nanoseconds: 1_500_000_000) // 1.5秒
         
         return """
 ✨ 魔法消费分析报告 ✨

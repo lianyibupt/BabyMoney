@@ -6,17 +6,16 @@
 //
 
 import Foundation
-import SwiftData
 
 enum TransactionType: String, Codable {
     case income = "in"
     case expense = "out"
 }
 
-@Model
-final class Transaction {
-    var id: String
-    var userId: String
+// 交易结构体，不使用SwiftData
+struct Transaction {
+    let id: String
+    let userId: String
     var amount: Double
     var type: String // "in" or "out"
     var categoryId: String?

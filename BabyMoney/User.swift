@@ -6,16 +6,15 @@
 //
 
 import Foundation
-import SwiftData
 
-@Model
-final class User {
-    var id: String
-    var name: String
-    var color: String
-    var textColor: String
-    var borderColor: String
-    var iconColor: String
+// 用户结构体，不使用SwiftData
+struct User {
+    let id: String
+    let name: String
+    let color: String
+    let textColor: String
+    let borderColor: String
+    let iconColor: String
     var balance: Double
     
     init(id: String, name: String, color: String, textColor: String, borderColor: String, iconColor: String, balance: Double) {
