@@ -23,7 +23,7 @@ struct ReportsView: View {
     ]
     
     // 模拟消费分类数据
-    let categoryData = [
+    let categoryData: [CategoryItem] = [
         CategoryItem(name: "零食", amount: 30, color: Color(hex: "FF6B6B")),
         CategoryItem(name: "文具", amount: 15, color: Color(hex: "4CAF50")),
         CategoryItem(name: "玩具", amount: 20, color: Color(hex: "9B6BFF")),
@@ -165,7 +165,7 @@ struct CategoryItem: Identifiable {
 struct TimeRangeButton: View {
     let title: String
     let isSelected: Bool
-    let action: () -\u003e Void
+    let action: () -> Void
     
     var body: some View {
         Button(action: action) {
@@ -228,7 +228,7 @@ struct TrendChart: View {
     let data: [TrendItem]
     
     var body: some View {
-        GeometryReader {\ geometry in
+        GeometryReader { geometry in
             HStack(spacing: geometry.size.width / CGFloat(data.count * 2)) {
                 ForEach(data) { item in
                     VStack {
@@ -305,11 +305,11 @@ struct PieChart: View {
         }
     }
     
-    private func totalAmount() -\u003e Double {
+    private func totalAmount() -> Double {
         data.reduce(0) { $0 + $1.amount }
     }
     
-    private func calculateStartAngle(at index: Int) -\u003e Double {
+    private func calculateStartAngle(at index: Int) -> Double {
         var startAngle: Double = -90 // 从顶部开始
         for i in 0..<index {
             startAngle += (data[i].amount / totalAmount()) * 360
@@ -317,7 +317,7 @@ struct PieChart: View {
         return startAngle
     }
     
-    private func calculateEndAngle(at index: Int) -\u003e Double {
+    private func calculateEndAngle(at index: Int) -> Double {
         return calculateStartAngle(at: index) + (data[index].amount / totalAmount()) * 360
     }
 }
@@ -367,63 +367,8 @@ struct CategoryRow: View {
     }
 }
 
-struct TabButton: View {
-    let index: Int
-    let icon: String
-    let title: String
-    @Binding var isActive: Int
-    
-    var body: some View {
-        Button(action: {
-            isActive = index
-        }) {
-            VStack(spacing: 5) {
-                Image(systemName: icon)
-                    .resizable()
-                    .frame(width: 24, height: 24)
-                    .foregroundColor(isActive == index ? Color(hex: "FF8585") : Color.gray)
-                
-                Text(title)
-                    .font(.system(size: 12))
-                    .foregroundColor(isActive == index ? Color(hex: "FF8585") : Color.gray)
-            }
-            .frame(maxWidth: .infinity)
-        }
-    }
-}
 
-// 扩展以支持指定圆角
-extension View {
-    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
-        clipShape(RoundedCorner(radius: radius, corners: corners))
-    }
-}
 
-struct RoundedCorner: Shape {
-    var radius: CGFloat = .infinity
-    var corners: UIRectCorner = .allCorners
-    
-    func path(in rect: CGRect) -> Path {
-        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
-        return Path(path.cgPath)
-    }
-}
-
-extension Color {
-    init(hex: String) {
-        let scanner = Scanner(string: hex)
-        _ = scanner.scanString("#")
-        
-        var rgb: UInt64 = 0
-        scanner.scanHexInt64(\u0026rgb)
-        
-        let r = Double((rgb \u003e\u003e 16) \u0026 0xFF) / 255.0
-        let g = Double((rgb \u003e\u003e 8) \u0026 0xFF) / 255.0
-        let b = Double(rgb \u0026 0xFF) / 255.0
-        
-        self.init(red: r, green: g, blue: b)
-    }
-}
 
 #Preview {
     ReportsView()

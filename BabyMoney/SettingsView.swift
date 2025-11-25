@@ -29,24 +29,27 @@ struct SettingsView: View {
                     
                     // 安全设置
                     SettingsSection(title: "安全设置") {
-                        SettingRow(
+                        VStack(spacing: 0) {
+                            SettingRow(
                             icon: Image(systemName: "lock.fill"),
                             title: "修改密码",
                             subtitle: "点击修改当前密码",
                             showArrow: true
-                        ) {}
+                            )
                         
-                        SettingRow(
+                            SettingRow(
                             icon: Image(systemName: "faceid.fill"),
                             title: "生物识别",
                             subtitle: "使用Face ID或Touch ID解锁",
                             showArrow: false
-                        ) {}
+                            )
+                        }
                     }
                     
                     // 通知设置
                     SettingsSection(title: "通知设置") {
-                        SettingRow(
+                        VStack(spacing: 0) {
+                            SettingRow(
                             icon: Image(systemName: "bell.fill"),
                             title: "通知提醒",
                             subtitle: "开启后接收交易提醒",
@@ -57,7 +60,7 @@ struct SettingsView: View {
                                 .tint(Color(hex: "FF8585"))
                         }
                         
-                        SettingRow(
+                            SettingRow(
                             icon: Image(systemName: "speaker.fill"),
                             title: "声音提醒",
                             subtitle: "交易时发出提示音",
@@ -67,30 +70,33 @@ struct SettingsView: View {
                                 .labelsHidden()
                                 .tint(Color(hex: "FF8585"))
                         }
+                        }
                     }
                     
                     // 关于我们
                     SettingsSection(title: "关于我们") {
-                        SettingRow(
+                        VStack(spacing: 0) {
+                            SettingRow(
                             icon: Image(systemName: "info.circle.fill"),
                             title: "关于BabyMoney",
                             subtitle: "版本 1.0.0",
                             showArrow: true
-                        ) {}
+                            )
                         
-                        SettingRow(
+                            SettingRow(
                             icon: Image(systemName: "doc.text.fill"),
                             title: "用户协议",
                             subtitle: "查看用户服务条款",
                             showArrow: true
-                        ) {}
+                            )
                         
-                        SettingRow(
+                            SettingRow(
                             icon: Image(systemName: "shield.fill"),
                             title: "隐私政策",
                             subtitle: "了解我们如何保护你的数据",
                             showArrow: true
-                        ) {}
+                            )
+                        }
                     }
                     
                     // 退出登录
@@ -341,37 +347,6 @@ struct BottomNavigationBar: View {
     }
 }
 
-extension Color {
-    init(hex: String) {
-        let scanner = Scanner(string: hex)
-        _ = scanner.scanString("#")
-        
-        var rgb: UInt64 = 0
-        scanner.scanHexInt64(&rgb)
-        
-        let r = Double((rgb >> 16) & 0xFF) / 255.0
-        let g = Double((rgb >> 8) & 0xFF) / 255.0
-        let b = Double(rgb & 0xFF) / 255.0
-        
-        self.init(red: r, green: g, blue: b)
-    }
-}
-
-extension View {
-    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
-        clipShape(RoundedCorner(radius: radius, corners: corners))
-    }
-}
-
-struct RoundedCorner: Shape {
-    var radius: CGFloat = .infinity
-    var corners: UIRectCorner = .allCorners
-    
-    func path(in rect: CGRect) -> Path {
-        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
-        return Path(path.cgPath)
-    }
-}
 
 #Preview {
     SettingsView()

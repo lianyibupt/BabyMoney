@@ -5,6 +5,3 @@ class TestClass {
         print("Test works!")
     }
 }
-
-let test = TestClass()
-test.test()
