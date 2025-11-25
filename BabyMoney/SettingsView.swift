@@ -4,7 +4,7 @@ struct SettingsView: View {
     @State private var showPasswordView = false
     @State private var notificationsEnabled = true
     @State private var soundEnabled = true
-    @State private var currentUserName = "姐姐"
+    @AppStorage("currentUserName") var currentUserName = "蓝莓"
     
     var body: some View {
         ZStack {
@@ -27,6 +27,16 @@ struct SettingsView: View {
                     // 用户信息卡片
                     UserInfoCard(userName: currentUserName)
                     
+                    SettingsSection(title: "账户切换") {
+                        VStack(spacing: 12) {
+                            Picker("账户", selection: $currentUserName) {
+                                Text("蓝莓").tag("蓝莓")
+                                Text("樱桃").tag("樱桃")
+                            }
+                            .pickerStyle(.segmented)
+                        }
+                    }
+
                     // 安全设置
                     SettingsSection(title: "安全设置") {
                         VStack(spacing: 0) {
@@ -301,8 +311,8 @@ struct BottomNavigationBar: View {
         ZStack {
             Rectangle()
                 .fill(Color.white)
-                .frame(height: 80)
-                .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: -5)
+                .frame(height: 56)
+                .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: -3)
             
             HStack {
                 // 首页按钮
@@ -326,7 +336,7 @@ struct BottomNavigationBar: View {
                     isSelected: selectedTab == .settings
                 )
             }
-            .padding(.bottom, 20)
+            .padding(.bottom, 8)
         }
         .ignoresSafeArea(edges: .bottom)
     }
@@ -334,13 +344,13 @@ struct BottomNavigationBar: View {
     // 标签按钮组件
     @ViewBuilder
     private func TabButton(icon: String, label: String, isSelected: Bool) -> some View {
-        VStack(spacing: 5) {
+        VStack(spacing: 3) {
             Image(systemName: icon)
                 .foregroundColor(isSelected ? Color(hex: "FF8585") : Color.gray)
-                .font(.system(size: 22))
+                .font(.system(size: 20))
             
             Text(label)
-                .font(.system(size: 12))
+                .font(.system(size: 11))
                 .foregroundColor(isSelected ? Color(hex: "FF8585") : Color.gray)
         }
         .frame(maxWidth: .infinity)

@@ -18,18 +18,18 @@ struct ContentView: View {
                     
                     // 用户卡片区域
                     HStack(spacing: 30) {
-                        // 姐姐卡片
+                        // 蓝莓卡片
                         UserCard(
-                            name: "姐姐",
+                            name: "蓝莓",
                             iconColor: Color(hex: "FF6B6B"),
                             cardColor: Color.white,
                             borderColor: Color(hex: "FFD1D1"),
                             textColor: Color(hex: "FF6B6B")
                         )
                         
-                        // 妹妹卡片
+                        // 樱桃卡片
                         UserCard(
-                            name: "妹妹",
+                            name: "樱桃",
                             iconColor: Color(hex: "9B6BFF"),
                             cardColor: Color.white,
                             borderColor: Color(hex: "E4D1FF"),
@@ -51,7 +51,7 @@ struct UserCard: View {
     let textColor: Color
     
     var body: some View {
-        NavigationLink(destination: DashboardView(userName: name)) {
+        NavigationLink(destination: DashboardView()) {
             VStack(spacing: 20) {
                 // 兔子图标
                 ZStack {
@@ -61,7 +61,7 @@ struct UserCard: View {
                         .shadow(radius: 4)
                     
                     Circle()
-                        .fill(Color(hex: name == "姐姐" ? "FFEEEE" : "F4F0FF"))
+                        .fill(Color(hex: name == "蓝莓" ? "F4F0FF" : "FFEEEE"))
                         .frame(width: 70, height: 70)
                     
                     // 简化的兔子图标

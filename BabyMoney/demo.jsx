@@ -31,8 +31,8 @@ const callGemini = async (prompt) => {
 const DEFAULT_PIN = "0000"; 
 
 const INITIAL_USERS = [
-  { id: 'u1', name: '姐姐', color: 'bg-pink-100', text: 'text-pink-600', border: 'border-pink-300', iconColor: '#db2777', balance: 50 },
-  { id: 'u2', name: '妹妹', color: 'bg-purple-100', text: 'text-purple-600', border: 'border-purple-300', iconColor: '#9333ea', balance: 50 }
+  { id: 'u1', name: '蓝莓', color: 'bg-purple-100', text: 'text-purple-600', border: 'border-purple-300', iconColor: '#9333ea', balance: 50 },
+  { id: 'u2', name: '樱桃', color: 'bg-pink-100', text: 'text-pink-600', border: 'border-pink-300', iconColor: '#db2777', balance: 50 }
 ];
 
 const CATEGORIES = [

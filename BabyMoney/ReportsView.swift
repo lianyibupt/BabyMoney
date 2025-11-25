@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ReportsView: View {
-    let userName: String = "姐姐" // 模拟用户名
+    @AppStorage("currentUserName") var userName: String = "蓝莓"
     @State private var selectedTimeRange: TimeRange = .month
     @State private var activeTab = 1 // 选中的是报告标签
     
@@ -128,7 +128,7 @@ struct ReportsView: View {
                         .padding(20)
                     }
                     .padding(.horizontal, 20)
-                    .padding(.bottom, 100)
+                    .padding(.bottom, 72)
                 }
                 
                 // 底部导航栏
@@ -138,11 +138,11 @@ struct ReportsView: View {
                     TabButton(index: 2, icon: "brain", title: "建议", isActive: $activeTab)
                     TabButton(index: 3, icon: "person", title: "我的", isActive: $activeTab)
                 }
-                .padding(.top, 10)
-                .padding(.bottom, 20)
+                .padding(.top, 6)
+                .padding(.bottom, 12)
                 .background(Color.white)
-                .cornerRadius(20, corners: [.topLeft, .topRight])
-                .shadow(radius: 10, y: -5)
+                .cornerRadius(16, corners: [.topLeft, .topRight])
+                .shadow(radius: 6, y: -3)
             }
         }
     }

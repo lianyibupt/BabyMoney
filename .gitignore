@@ -1,2 +1,4 @@
 ReactApp
 build
+.DS_Store
+.*

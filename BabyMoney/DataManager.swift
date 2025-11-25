@@ -18,8 +18,8 @@ class DataManager {
     
     // 初始用户数据
     private let initialUsers: [User] = [
-        User(id: "u1", name: "姐姐", color: "#fce7f3", textColor: "#db2777", borderColor: "#fbcfe8", iconColor: "#db2777", balance: 50),
-        User(id: "u2", name: "妹妹", color: "#f3e8ff", textColor: "#9333ea", borderColor: "#e9d5ff", iconColor: "#9333ea", balance: 50)
+        User(id: "u1", name: "蓝莓", color: "#f3e8ff", textColor: "#9333ea", borderColor: "#e9d5ff", iconColor: "#9333ea", balance: 50),
+        User(id: "u2", name: "樱桃", color: "#fce7f3", textColor: "#db2777", borderColor: "#fbcfe8", iconColor: "#db2777", balance: 50)
     ]
     
     private init() {
