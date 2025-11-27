@@ -182,6 +182,22 @@ class DataManager {
     func setWeeklyAllowance(_ amount: Double) {
         UserDefaults.standard.set(amount, forKey: weeklyAllowanceKey)
     }
+    
+    // 删除交易
+    func deleteTransaction(_ transaction: Transaction) {
+        mockTransactions.removeAll { $0.id == transaction.id }
+        
+        // 更新用户余额
+        if let userIndex = mockUsers.firstIndex(where: { $0.id == transaction.userId }) {
+            if transaction.type == "in" {
+                // 如果是收入，删除后要减去相应金额
+                mockUsers[userIndex].balance -= transaction.amount
+            } else {
+                // 如果是支出，删除后要加上相应金额
+                mockUsers[userIndex].balance += transaction.amount
+            }
+        }
+    }
 }
 
 // 扩展Date以获取ISO8601格式的字符串

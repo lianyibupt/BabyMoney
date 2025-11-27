@@ -51,10 +51,18 @@ struct DashboardView: View {
                         .padding(.horizontal, 20)
                         
                         // 余额显示 - 放大字体
-                        Text("￥\(String(format: "%.2f", balance))")
-                            .font(.system(size: 64, weight: .bold))
-                            .foregroundColor(Color.black)
-                            .padding(.horizontal, 20)
+                        HStack(alignment: .bottom, spacing: 15) {
+                            Image(systemName: "piggybank.fill")
+                                .font(.system(size: 50, weight: .bold))
+                                .foregroundColor(Color(hex: "FF6B6B"))
+                            Text("￥\(String(format: "%.2f", balance))")
+                                .font(.system(size: 64, weight: .bold))
+                                .foregroundColor(Color.black)
+                            Image(systemName: "coins.fill")
+                                .font(.system(size: 40, weight: .bold))
+                                .foregroundColor(Color(hex: "FFD700"))
+                        }
+                        .padding(.horizontal, 20)
                         
                         Spacer().frame(height: 20)
                         
@@ -71,9 +79,14 @@ struct DashboardView: View {
                                     Text("本月收入")
                                         .font(.system(size: 14))
                                         .foregroundColor(Color.white.opacity(0.8))
-                                    Text(String(format: "+¥%.2f", thisMonthIncome))
-                                        .font(.system(size: 32, weight: .bold))
-                                        .foregroundColor(Color.white)
+                                    HStack(alignment: .bottom, spacing: 12) {
+                                        Image(systemName: "gift.fill")
+                                            .font(.system(size: 30, weight: .bold))
+                                            .foregroundColor(Color(hex: "FFD1D1"))
+                                        Text(String(format: "+¥%.2f", thisMonthIncome))
+                                            .font(.system(size: 32, weight: .bold))
+                                            .foregroundColor(Color.white)
+                                    }
                                 }
                                 
                                 Spacer()
@@ -83,9 +96,14 @@ struct DashboardView: View {
                                     Text("本月支出")
                                         .font(.system(size: 14))
                                         .foregroundColor(Color.white.opacity(0.8))
-                                    Text(String(format: "-¥%.2f", thisMonthExpense))
-                                        .font(.system(size: 32, weight: .bold))
-                                        .foregroundColor(Color.white)
+                                    HStack(alignment: .bottom, spacing: 12) {
+                                        Image(systemName: "cart.fill")
+                                            .font(.system(size: 30, weight: .bold))
+                                            .foregroundColor(Color(hex: "FFD1D1"))
+                                        Text(String(format: "-¥%.2f", thisMonthExpense))
+                                            .font(.system(size: 32, weight: .bold))
+                                            .foregroundColor(Color.white)
+                                    }
                                 }
                             }
                             .padding(22)
@@ -223,6 +241,8 @@ struct DashboardView: View {
     }
     
     private func deleteTransaction(_ transaction: Transaction) {
+        // 从DataManager中删除交易
+        DataManager.shared.deleteTransaction(transaction)
         // 从本地列表中移除
         recentTransactions.removeAll { $0.id == transaction.id }
         // 刷新数据
@@ -360,15 +380,20 @@ struct AddTransactionView: View {
                                 .foregroundColor(Color.gray)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             // 金额输入 - 放大字体
-                        TextField("输入金额", text: $amount)
-                            .font(.system(size: 64, weight: .bold))
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(Color.black)
-                            .padding()
-                            .background(Color.white)
-                            .cornerRadius(15)
-                            .shadow(radius: 3)
+                            HStack(alignment: .center, spacing: 20) {
+                                Image(systemName: "number.circle.fill")
+                                    .font(.system(size: 50, weight: .bold))
+                                    .foregroundColor(Color(hex: "FF6B6B"))
+                                TextField("输入金额", text: $amount)
+                                    .font(.system(size: 64, weight: .bold))
+                                    .keyboardType(.decimalPad)
+                                    .multilineTextAlignment(.center)
+                                    .foregroundColor(Color.black)
+                                    .padding()
+                                    .background(Color.white)
+                                    .cornerRadius(15)
+                                    .shadow(radius: 3)
+                            }
                         }
                         .padding(.horizontal, 30)
                         

@@ -144,8 +144,9 @@ struct TransactionListView: View {
     }
     
     private func deleteTransaction(_ transaction: Transaction) {
-        // 这里需要在DataManager中添加删除方法
-        // 暂时从本地列表中移除
+        // 从DataManager中删除交易
+        DataManager.shared.deleteTransaction(transaction)
+        // 从本地列表中移除
         transactions.removeAll { $0.id == transaction.id }
     }
 }

@@ -47,10 +47,15 @@ struct TransactionRowView: View {
             
             Spacer()
             
-            // 金额 - 放大字体
-            Text(transaction.type == "in" ? "+¥\(String(format: "%.2f", transaction.amount))" : "-¥\(String(format: "%.2f", transaction.amount))")
-                .font(.system(size: 24, weight: .bold))
-                .foregroundColor(transaction.type == "in" ? Color(hex: "4CAF50") : Color(hex: "FF6B6B"))
+            // 金额
+            HStack(alignment: .center, spacing: 8) {
+                Image(systemName: transaction.type == "in" ? "arrow.down.circle.fill" : "arrow.up.circle.fill")
+                    .font(.system(size: 22, weight: .bold))
+                    .foregroundColor(transaction.type == "in" ? Color(hex: "4CAF50") : Color(hex: "FF6B6B"))
+                Text(transaction.type == "in" ? "+¥\(String(format: "%.2f", transaction.amount))" : "-¥\(String(format: "%.2f", transaction.amount))")
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundColor(transaction.type == "in" ? Color(hex: "4CAF50") : Color(hex: "FF6B6B"))
+            }
         }
         .padding(15)
         .background(Color.white)
